@@ -1,0 +1,76 @@
+site_name: ngx-restangular 文档
+site_description: ngx-restangular 文档
+site_author: Nosy
+
+copyright: '@2018 wxdocs.github.io'
+
+repo_name: wxdocs
+repo_url: https://github.com/wxdocs
+edit_uri: ""
+
+theme:
+  name: material
+
+  include_search_page: false
+  search_index_only: true
+
+  language: zh
+  feature:
+    tabs: true
+  palette:
+    primary: indigo
+    accent: indigo
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: assets/images/favicon.png
+  logo:
+    icon: "\uE80C"
+  extra_css: [assets/stylesheets/extra.css]
+extra:
+  search:
+    language: 'jp'
+  social:
+    - type: globe
+      link: http://wohugb.github.io
+    - type: github-alt
+      link: https://github.com/wohugb
+    - type: twitter
+      link: https://twitter.com/wohugb
+    - type: linkedin
+      link: https://linkedin.com/in/wohugb
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      linenums: false
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.details
+
+pages:
+  - 首页: index.md
+  - 入门:
+    - 目录: starter-guide/index.md
+    - 快速使用: starter-guide/quick-configuration.md
+    - 使用: starter-guide/using.md
+    - 配置: starter-guide/configuring.md
+    - 方法: starter-guide/methods.md
+    - 拷贝元素: starter-guide/copying-elements.md
+    - 模板中直接使用值: starter-guide/values-directly.md
+    - 地址构建: starter-guide/url-building.md
+    - 创建新方法: starter-guide/creating-new-methods.md
+    - 添加自定义方法到集合: starter-guide/adding-custom-methods-to-collections.md
+    - 添加自定义方法到模型: starter-guide/adding-custom-methods-to-models.md
+    - FAQ: starter-guide/faq.md
+  - 演示: demo.md
+  - 当前: current-stage.md
+  - 重命名: renaming.md
+  - FAQ: faq.md
+  - 依赖: dependencies.md
+  - 服务框架: server-frameworks.md
+  - 贡献: contributing.md
+  - 证书: license.md

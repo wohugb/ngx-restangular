@@ -210,85 +210,85 @@ export class OtherComponent {
   allAccounts;
   accounts;
   account;
-  
+
   constructor(private restangular: Restangular) {
   }
-  
+
   ngOnInit() {
     // First way of creating a this.restangular object. Just saying the base URL
     let baseAccounts = this.restangular.all('accounts');
-    
+
     // This will query /accounts and return a observable.
     baseAccounts.getList().subscribe(accounts => {
       this.allAccounts = accounts;
     });
-    
-    
+
+
     let newAccount = {name: "Gonto's account"};
-    
+
     // POST /accounts
     baseAccounts.post(newAccount);
-    
+
     // GET to http://www.google.com/ You set the URL in this case
     this.restangular.allUrl('googlers', 'http://www.google.com/').getList();
-    
+
     // GET to http://www.google.com/1 You set the URL in this case
     this.restangular.oneUrl('googlers', 'http://www.google.com/1').get();
-    
+
     // You can do RequestLess "connections" if you need as well
-    
+
     // Just ONE GET to /accounts/123/buildings/456
     this.restangular.one('accounts', 123).one('buildings', 456).get();
-    
+
     // Just ONE GET to /accounts/123/buildings
     this.restangular.one('accounts', 123).getList('buildings');
-    
+
     // Here we use Observables
     // GET /accounts
     let baseAccounts$ = baseAccounts.getList().subscribe(accounts => {
       // Here we can continue fetching the tree :).
-      
+
       let firstAccount = accounts[0];
       // This will query /accounts/123/buildings considering 123 is the id of the firstAccount
       let buildings = firstAccount.getList("buildings");
-      
+
       // GET /accounts/123/places?query=param with request header: x-user:mgonto
       let loggedInPlaces = firstAccount.getList("places", {query: 'param'}, {'x-user': 'mgonto'});
-      
+
       // This is a regular JS object, we can change anything we want :)
       firstAccount.name = "Gonto";
-      
+
       // If we wanted to keep the original as it is, we can copy it to a new element
       let editFirstAccount = this.restangular.copy(firstAccount);
       editFirstAccount.name = "New Name";
-      
-      
+
+
       // PUT /accounts/123. The name of this account will be changed from now on
       firstAccount.put();
       editFirstAccount.put();
-      
+
       // PUT /accounts/123. Save will do POST or PUT accordingly
       firstAccount.save();
-      
+
       // DELETE /accounts/123 We don't have first account anymore :(
       firstAccount.remove();
-      
+
     }, () => {
       alert("Oops error from server :(");
     });
-    
-    
+
+
     // Get first account
     let firstAccount$ = baseAccounts$.map(accounts => accounts[0]);
-    
-    
+
+
     // POST /accounts/123/buildings with MyBuilding information
     firstAccount$.switchMap(firstAccount => {
       var myBuilding = {
         name: "Gonto's Building",
         place: "Argentina"
       };
-      
+
       return firstAccount.post("Buildings", myBuilding)
     })
     .subscribe(() => {
@@ -296,45 +296,45 @@ export class OtherComponent {
     }, () => {
       console.log("There was an error saving");
     });
-    
-    
+
+
     // GET /accounts/123/users?query=params
     firstAccount$.switchMap(firstAccount => {
       var myBuilding = {
         name: "Gonto's Building",
         place: "Argentina"
       };
-    
+
       return firstAccount.getList("users", {query: 'params'});
     })
     .subscribe((users) => {
       // Instead of posting nested element, a collection can post to itself
       // POST /accounts/123/users
       users.post({userName: 'unknown'});
-    
+
       // Custom methods are available now :).
       // GET /accounts/123/users/messages?param=myParam
       users.customGET("messages", {param: "myParam"});
-    
+
       var firstUser = users[0];
-    
+
       // GET /accounts/123/users/456. Just in case we want to update one user :)
       let userFromServer = firstUser.get();
-    
+
       // ALL http methods are available :)
       // HEAD /accounts/123/users/456
       firstUser.head()
     }, () => {
       console.log("There was an error saving");
     });
-    
-    
+
+
     // Second way of creating this.restangular object. URL and ID :)
     var account = this.restangular.one("accounts", 123);
-    
+
     // GET /accounts/123?single=true
     this.account = account.get({single: true});
-    
+
     // POST /accounts/123/messages?param=myParam with the body of name: "My Message"
     account.customPOST({name: "My Message"}, "messages", {param: "myParam"}, {})
   }
@@ -354,112 +354,112 @@ export class OtherComponent {
   allAccounts;
   accounts;
   account;
-  
+
   constructor(private restangular: Restangular) {
   }
-  
+
   ngOnInit() {
-    
+
     // First way of creating a this.restangular object. Just saying the base URL
     let baseAccounts = this.restangular.all('accounts');
-  
+
     // This will query /accounts and return a promise.
     baseAccounts.getList().toPromise().then(function(accounts) {
       this.allAccounts = accounts;
     });
-  
+
     var newAccount = {name: "Gonto's account"};
-  
+
     // POST /accounts
     baseAccounts.post(newAccount);
-  
+
     // GET to http://www.google.com/ You set the URL in this case
     this.restangular.allUrl('googlers', 'http://www.google.com/').getList();
-  
+
     // GET to http://www.google.com/1 You set the URL in this case
     this.restangular.oneUrl('googlers', 'http://www.google.com/1').get();
-  
+
     // You can do RequestLess "connections" if you need as well
-  
+
     // Just ONE GET to /accounts/123/buildings/456
     this.restangular.one('accounts', 123).one('buildings', 456).get();
-  
+
     // Just ONE GET to /accounts/123/buildings
     this.restangular.one('accounts', 123).getList('buildings');
-  
+
     // Here we use Promises then
     // GET /accounts
     baseAccounts.getList().toPromise().then(function (accounts) {
       // Here we can continue fetching the tree :).
-    
+
       var firstAccount = accounts[0];
       // This will query /accounts/123/buildings considering 123 is the id of the firstAccount
       this.buildings = firstAccount.getList("buildings");
-    
+
       // GET /accounts/123/places?query=param with request header: x-user:mgonto
       this.loggedInPlaces = firstAccount.getList("places", {query: 'param'}, {'x-user': 'mgonto'});
-    
+
       // This is a regular JS object, we can change anything we want :)
       firstAccount.name = "Gonto";
-    
+
       // If we wanted to keep the original as it is, we can copy it to a new element
       var editFirstAccount = this.restangular.copy(firstAccount);
       editFirstAccount.name = "New Name";
-    
-    
+
+
       // PUT /accounts/123. The name of this account will be changed from now on
       firstAccount.put();
       editFirstAccount.put();
-    
+
       // PUT /accounts/123. Save will do POST or PUT accordingly
       firstAccount.save();
-    
+
       // DELETE /accounts/123 We don't have first account anymore :(
       firstAccount.remove();
-    
+
       var myBuilding = {
         name: "Gonto's Building",
         place: "Argentina"
       };
-    
+
       // POST /accounts/123/buildings with MyBuilding information
       firstAccount.post("Buildings", myBuilding).toPromise().then(function() {
         console.log("Object saved OK");
       }, function() {
         console.log("There was an error saving");
       });
-    
+
       // GET /accounts/123/users?query=params
       firstAccount.getList("users", {query: 'params'}).toPromise().then(function(users) {
         // Instead of posting nested element, a collection can post to itself
         // POST /accounts/123/users
         users.post({userName: 'unknown'});
-      
+
         // Custom methods are available now :).
         // GET /accounts/123/users/messages?param=myParam
         users.customGET("messages", {param: "myParam"});
-      
+
         var firstUser = users[0];
-      
+
         // GET /accounts/123/users/456. Just in case we want to update one user :)
         this.userFromServer = firstUser.get();
-      
+
         // ALL http methods are available :)
         // HEAD /accounts/123/users/456
         firstUser.head()
-      
+
       });
-    
+
     }, function errorCallback() {
       alert("Oops error from server :(");
     });
-  
+
     // Second way of creating this.restangular object. URL and ID :)
     var account = this.restangular.one("accounts", 123);
-  
+
     // GET /accounts/123?single=true
     this.account = account.get({single: true});
-  
+
     // POST /accounts/123/messages?param=myParam with the body of name: "My Message"
     account.customPOST({name: "My Message"}, "messages", {param: "myParam"}, {})
   }
@@ -473,11 +473,11 @@ export class OtherComponent {
 
 ### Properties
 Restangular comes with defaults for all of its properties but you can configure them. **So, if you don't need to configure something, there's no need to add the configuration.**
-You can set all these configurations in **[RestangularModule](#how-to-configure-them-globally) to change the global configuration**, you can also **use the [withConfig](#how-to-create-a-restangular-service-with-a-different-configuration-from-the-global-one) method in Restangular service to create a new Restangular service with some scoped configuration** or **use [withConfig](#withconfig) in component to make specified Restangular**  
+You can set all these configurations in **[RestangularModule](#how-to-configure-them-globally) to change the global configuration**, you can also **use the [withConfig](#how-to-create-a-restangular-service-with-a-different-configuration-from-the-global-one) method in Restangular service to create a new Restangular service with some scoped configuration** or **use [withConfig](#withconfig) in component to make specified Restangular**
 
 #### withConfig
 You can configure Restangular "withConfig" like in example below, you can also configure them globally [RestangularModule](#how-to-configure-them-globally) or in service with [withConfig](#how-to-create-a-restangular-service-with-a-different-configuration-from-the-global-one)
- 
+
 ````javascript
 // Function for settting the default restangular configuration
 export function RestangularConfigFactory (RestangularProvider) {
@@ -612,13 +612,13 @@ The refreshAccesstoken function must return observable. It`s function that will 
 // Function for settting the default restangular configuration
 export function RestangularConfigFactory (RestangularProvider, authService) {
   RestangularProvider.setBaseUrl('http://api.test.com/v1');
-    
+
   // This function must return observable
   var refreshAccesstoken = function () {
     // Here you can make action before repeated request
     return authService.functionForTokenUpdate();
   };
-  
+
   RestangularProvider.addErrorInterceptor((response, subject, responseHandler) => {
     if (response.status === 403) {
 
@@ -626,27 +626,27 @@ export function RestangularConfigFactory (RestangularProvider, authService) {
       .switchMap(refreshAccesstokenResponse => {
         //If you want to change request or make with it some actions and give the request to the repeatRequest func.
         //Or you can live it empty and request will be the same.
-        
+
         // update Authorization header
         response.request.headers.set('Authorization', 'Bearer ' + refreshAccesstokenResponse)
-        
+
         return response.repeatRequest(response.request);
       })
       .subscribe(
         res => responseHandler(res),
         err => subject.error(err)
       );
-      
+
       return false; // error handled
     }
     return true; // error not handled
   });
 }
- 
+
 // AppModule is the main entry point into Angular2 bootstraping process
 @NgModule({
   bootstrap: [ AppComponent ],
-  imports: [ 
+  imports: [
     // Importing RestangularModule and making default configs for restanglar
     RestangularModule.forRoot([authService], RestangularConfigFactory),
   ],
@@ -736,10 +736,10 @@ export class AppModule {}
 })
 export class OtherComponent {
   users;
-  
+
   constructor(@Inject(REST_FUL_RESPONSE) public restFulResponse) {
   }
-  
+
   ngOnInit() {
     this.restFulResponse.all('users').getList().subscribe( response => {
       this.users = response.data;
@@ -840,7 +840,7 @@ import { RestangularModule } from 'ngx-restangular';
 export function RestangularConfigFactory (RestangularProvider, http) {
   RestangularProvider.setBaseUrl('http://api.restngx.local/v1');
   RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
-  
+
   // Example of using Http service inside global config restangular
   RestangularProvider.addElementTransformer('me', true, ()=>{
     return http.get('http://api.test.com/v1/users/2', {});
@@ -912,7 +912,7 @@ export class OtherComponent {
     // GET to http://www.google.com/users
     // Uses global configuration
     Restangular.all('users').getList()
-  
+
     // GET to http://www.bing.com/users
     // Uses Bing configuration which is based on Global one, therefore .json is added.
     RestangularBing.all('users').getList()
@@ -956,7 +956,7 @@ export class OtherComponent {
   constructor(@Inject(USER_REST) public User) {
     Users.one(2).get() // GET to /users/2
     Users.post({data}) // POST to /users
-    
+
     // GET to /users
     Users.getList().subscribe( users => {
       var user = users[0]; // user === {id: 1, name: "Tonto"}
@@ -1253,11 +1253,11 @@ export function RestangularConfigFactory (RestangularProvider, authService) {
 
   // set static header
   RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
-  
+
   // by each request to the server receive a token and update headers with it
   RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params) => {
     let bearerToken = authService.getBearerToken();
-      
+
     return {
       headers: Object.assign({}, headers, {Authorization: `Bearer ${bearerToken}`})
     };
